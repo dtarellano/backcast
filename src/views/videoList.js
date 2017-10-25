@@ -1,24 +1,25 @@
 var VideoListView = Backbone.View.extend({
   
   initialize: function() {
-    // was looking at videoListEntrySpec 
-    // assumed that we would be able to loop through exampleVideoData, but currently unable to
-    // exampleVideoData is returning undefined
-    
-    // for (var i = 0; i < window.exampleVideoData.length; i++) {
-    //   var model = new Video(window.exampleVideoData[i]);
-    //   var view = new VideoListEntryView({ model: model });
-    //   this.render();
-    // }
-    
-    this.render(); 
+    this.listenTo(this.collection, 'sync', this.render);
   },
 
   render: function() {
     this.$el.children().detach();
     this.$el.html(this.template());
+    
+    this.$('.video-list').append(
+      this.collection.map(function(video) {
+        return new VideoListEntryView({model: video}).render().el;
+      })
+    );
     return this;
   },
+  // renderVideo: function(video) {
+  //   console.log(video);
+  //   var videoEntry = new VideoListEntryView({model: video});
+  //   this.$el.append(videoEntry.render());
+  // },
 
   template: templateURL('src/templates/videoList.html')
 
